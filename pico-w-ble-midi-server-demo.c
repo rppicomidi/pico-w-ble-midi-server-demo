@@ -45,6 +45,8 @@ const uint8_t scan_resp_data[] = {
 };
 const uint8_t scan_resp_data_len = sizeof(scan_resp_data);
 
+static hci_con_handle_t con_handle = HCI_CON_HANDLE_INVALID;
+
 void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packet, uint16_t size) {
     UNUSED(size);
     UNUSED(channel);
@@ -76,6 +78,19 @@ void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packet, uint
                 case HCI_EVENT_DISCONNECTION_COMPLETE:
                     printf("Disconnected\r\n");
                     break;
+                case HCI_EVENT_GATTSERVICE_META:
+                    switch(hci_event_gattservice_meta_get_subevent_code(packet)) {
+                        case GATTSERVICE_SUBEVENT_SPP_SERVICE_CONNECTED:
+                            con_handle = gattservice_subevent_spp_service_connected_get_con_handle(packet);
+                            break;
+                        case GATTSERVICE_SUBEVENT_SPP_SERVICE_DISCONNECTED:
+                            printf("demo: I got GATTSERVICE_SUBEVENT_SPP_SERVICE_DISCONNECTED event\r\n");
+                            con_handle = HCI_CON_HANDLE_INVALID;
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -106,10 +121,19 @@ int main()
     //sm_add_event_handler(&sm_event_callback_registration);
     midi_service_stream_init(packet_handler);
 
-    // turn on bluetooth!
+    // turn on bluetooth
     hci_power_control(HCI_POWER_ON);
     for(;;) {
-        sleep_ms(1000); // TODO process incoming and outgoing MIDI packets from USB, etc.
+        //sleep_ms(1000); // TODO process incoming and outgoing MIDI packets from USB, etc.
+        if (con_handle != HCI_CON_HANDLE_INVALID) {
+            uint16_t timestamp;
+            uint8_t mes[3];
+            uint8_t nread = midi_service_stream_read(con_handle, sizeof(mes), mes, &timestamp);
+            if (nread != 0) {
+                printf("ts:%u  MIDI:", timestamp);
+                printf_hexdump(mes, nread);
+            }
+        }
     }
     return 0;
 }
