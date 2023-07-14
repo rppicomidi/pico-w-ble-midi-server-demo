@@ -41,6 +41,8 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/lib/ring_buffer_lib)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/pico-w-ble-midi-service)
 add_executable(${target_name}
     pico-w-ble-midi-server-demo.c
+    pico-w-ble-midi-server-demo-cli.c
+    ${CMAKE_CURRENT_LIST_DIR}/lib/embedded-cli/lib/src/embedded_cli.c
     )
 target_link_libraries(${target_name}
     pico_stdlib
@@ -51,6 +53,7 @@ target_link_libraries(${target_name}
     )
 target_include_directories(${target_name} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR} # For btstack config
+    ${CMAKE_CURRENT_LIST_DIR}/lib/embedded-cli/lib/include
     )
 
 my_pico_btstack_make_gatt_header(${target_name} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/pico-w-ble-midi-server-demo.gatt" "-I${CMAKE_CURRENT_LIST_DIR}/pico-w-ble-midi-service")

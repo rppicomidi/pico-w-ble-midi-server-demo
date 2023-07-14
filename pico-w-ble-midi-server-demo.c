@@ -29,6 +29,7 @@
 #include "pico/cyw43_arch.h"
 #include "pico/btstack_cyw43.h"
 #include "pico-w-ble-midi-server-demo.h"
+#include "pico-w-ble-midi-server-demo-cli.h"
 // This is Bluetooth LE only
 #define APP_AD_FLAGS 0x06
 const uint8_t adv_data[] = {
@@ -99,6 +100,19 @@ void packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *packet, uint
             break;
     }
 }
+
+static void process_send_command(uint8_t* byte_array, uint8_t nbytes)
+{
+    if (con_handle != HCI_CON_HANDLE_INVALID) {
+        printf("Sending MIDI bytes: ");
+        printf_hexdump(byte_array, nbytes);
+        midi_service_stream_write(con_handle, nbytes, byte_array);
+    }
+    else {
+        printf("Not connected yet\r\n");
+    }
+}
+
 // TODO static btstack_packet_callback_registration_t sm_event_callback_registration;
 int main()
 {
@@ -123,6 +137,7 @@ int main()
 
     // turn on bluetooth
     hci_power_control(HCI_POWER_ON);
+    pico_w_ble_midi_server_demo_cli_init(process_send_command);
     for(;;) {
         //sleep_ms(1000); // TODO process incoming and outgoing MIDI packets from USB, etc.
         if (con_handle != HCI_CON_HANDLE_INVALID) {
@@ -134,6 +149,7 @@ int main()
                 printf_hexdump(mes, nread);
             }
         }
+        pico_w_ble_midi_server_demo_cli_task();
     }
     return 0;
 }

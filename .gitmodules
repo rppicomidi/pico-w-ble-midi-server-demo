@@ -4,3 +4,6 @@
 [submodule "lib/ring_buffer_lib"]
 	path = lib/ring_buffer_lib
 	url = https://github.com/rppicomidi/ring_buffer_lib.git
+[submodule "lib/embedded-cli"]
+	path = lib/embedded-cli
+	url = https://github.com/funbiscuit/embedded-cli.git
