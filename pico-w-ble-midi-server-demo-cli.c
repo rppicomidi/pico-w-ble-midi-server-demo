@@ -47,9 +47,11 @@ EmbeddedCli* pico_w_ble_midi_server_demo_cli_init(process_send_cb_t process_send
     while(getchar_timeout_us(0) != PICO_ERROR_TIMEOUT) {
         // flush out the console input buffer
     }
-
+    EmbeddedCliConfig* cfg = embeddedCliDefaultConfig();
+    cfg->cmdBufferSize = 128;
+    cfg->rxBufferSize = 128;
     // Initialize the CLI
-    cli = embeddedCliNewDefault();
+    cli = embeddedCliNew(cfg);
     cli->onCommand = onCommandFn;
     cli->writeChar = writeCharFn;
     CliCommandBinding sendBinding = {

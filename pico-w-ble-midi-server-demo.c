@@ -139,7 +139,6 @@ int main()
     hci_power_control(HCI_POWER_ON);
     pico_w_ble_midi_server_demo_cli_init(process_send_command);
     for(;;) {
-        //sleep_ms(1000); // TODO process incoming and outgoing MIDI packets from USB, etc.
         if (con_handle != HCI_CON_HANDLE_INVALID) {
             uint16_t timestamp;
             uint8_t mes[3];
