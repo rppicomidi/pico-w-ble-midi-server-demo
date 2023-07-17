@@ -56,7 +56,7 @@ target_include_directories(${target_name} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/lib/embedded-cli/lib/include
     )
 target_link_options(${target_name} PRIVATE -Xlinker --print-memory-usage)
-target_compile_options(${target_name} PRIVATE -Wall -Wextra -DCFG_TUSB_DEBUG=1)
+target_compile_options(${target_name} PRIVATE -Wall -Wextra)
 my_pico_btstack_make_gatt_header(${target_name} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/pico-w-ble-midi-server-demo.gatt" "-I${CMAKE_CURRENT_LIST_DIR}/pico-w-ble-midi-service")
 
 pico_add_extra_outputs(${target_name})
