@@ -10,8 +10,11 @@
 #define ENABLE_LOG_INFO
 #define ENABLE_LOG_ERROR
 #define ENABLE_PRINTF_HEXDUMP
-// helpful for throughput
-#define ENABLE_LE_DATA_LENGTH_EXTENSION
+// should be helpful for throughput for long sysex messages
+// #define ENABLE_LE_DATA_LENGTH_EXTENSION
+
+// For the BLE-MIDI server
+#define BLE_MIDI_SERVER_MAX_CONNECTIONS 1
 
 // for the client
 #if RUNNING_AS_CLIENT
